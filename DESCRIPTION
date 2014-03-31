@@ -3,6 +3,7 @@ Title: Your Static Site in R
 Description: Static site generator in R
 Version: 0.1
 Author: Jean-Olivier Irisson <irisson@normalesup.org>
+Maintainer: Jean-Olivier Irisson <irisson@normalesup.org>
 Depends:
     R (>= 3.0.2)
 License: GPL-3
