@@ -1,0 +1,152 @@
+#' Convert markup from a templating engine into HTML
+#'
+#' @param text character string with markup to feed to the appropriate conversion engine. Allowed markup are:
+#' - \code{\link{brew}}, with extension \code{.brew}
+#' - \code{R markdown}, with extensions \code{.Rmd} or \code{.rmd}
+#' - \code{R HTML} for \code{\link{knitr}}, with extensions \code{.Rhtml} or \code{.rhtml}
+#'
+#' @export
+toHTML <- function(text, ...) {
+  UseMethod("toHTML")
+}
+
+#' @export
+#' @importFrom brew brew
+toHTML.brew <- function(text, ...) {
+  out <- capture.output(brew(text=text, ...))
+  return(out)
+}
+
+#' @export
+#' @importFrom knitr knit2html
+toHTML.rmd <- function(text, ...) {
+  out <- knit2html(text=text, fragment.only=TRUE, quiet=TRUE, ...)
+  return(out)
+}
+
+#' @export
+#' @importFrom knitr knit2html
+toHTML.rhtml <- function(text, ...) {
+  out <- knit(text=text, quiet=TRUE, ...)
+  return(out)
+}
+
+
+#' Render a file into a full HTML page
+#'
+#' @param file path a file containing content to render
+#' @param layout path to a layout template within which the content is to be rendered; should contain \code{yield} somewhere
+#' @export
+#' @importFrom stringr str_c
+#' @importFrom tools file_ext
+render_file <- function(file, layout, ...) {
+
+  # check payload file and template existence
+  # file <- "inst/test_site/source/index.Rmd"
+  # template <- "inst/test_site/source/templates/main.brew"
+  if ( ! file.exists(file) ) {
+    stop("Cannot find file ", file)
+  }
+  if ( ! file.exists(layout) ) {
+    stop("Cannot find template file ", layout)
+  }
+
+  # read payload file content in a character string
+  yield <- scan(file, what="character", sep="\n", quiet=TRUE)
+  yield <- str_c(yield, collapse="\n")
+
+  # get file extension and call the appropriate rendering function
+  ext <- file_ext(file)
+  class(yield) <- c(tolower(ext), "character")
+  yield <- toHTML(yield)
+  # TODO define other environment variables that the template can use
+
+  # render the content of the yield within the template
+  dest <- str_replace(file, fixed(ext), "html")
+  brew(file=layout, output=dest)
+  # TODO allow something else than brew at this point
+
+  return(invisible(dest))
+}
+
+
+#' Render the full website
+#'
+#' @param dir directory containing the website (contains "source")
+#' @export
+#' @importFrom stringr str_c str_replace str_detect
+#' @importFrom plyr laply
+render <- function(dir=getwd(), ...) {
+  dir <- "inst/test_site/"
+
+  # remove final slash, perform path expansion
+  dir <- normalizePath(dir)
+  sourceDir <- str_c(dir, "/source")
+  
+  ## Run code
+
+  # list all R source files
+  codeFiles <- list.files(sourceDir, pattern=c("(R|r)$"), recursive=TRUE, full=TRUE)
+
+  # record current state of the source directory (to detect new files after the code is run)
+  allFiles <- list.files(sourceDir, recursive=TRUE, full=TRUE)
+
+  # run code in each file, from the directory in which each file is
+  wd <- getwd()
+  l_ply(codeFiles, function(file) {
+    setwd(dirname(file))
+    source(file)
+  })
+  setwd(wd)
+  
+  # detect new files
+  newAllFiles <- list.files(sourceDir, recursive=TRUE, full=TRUE)
+  generatedFiles <- newAllFiles[ ! newAllFiles %in% allFiles ]
+
+  
+  ## Render content
+  
+  # list currently existing content files
+  contentFiles <- list.files(sourceDir, pattern=c("(Rmd|rmd|brew|rhtml|Rhtml)$"), recursive=TRUE, full=TRUE)
+  # remove layout templates
+  isTemplate <- str_detect(contentFiles, "^layouts")
+  onlyContentFiles <- contentFiles[ ! isTemplate ]
+
+  contentFiles <- str_replace(contentFiles, fixed(str_c(sourceDir, "/")), "")
+
+
+  # render all content files
+  message("Rendering")
+  renderedFiles <- laply(onlyContentFiles, function(file) {
+    render_file(
+      file=str_c(sourceDir, "/", file),
+      template=str_c(sourceDir, "/templates/main.brew")
+    )
+  }, .progress="text")
+
+  # Move the content to the destination directory
+
+  # list all files except templates and source files for rendering
+  allFiles <- list.files(sourceDir, recursive=TRUE, full=TRUE)
+  allFiles <- str_replace(allFiles, fixed(str_c(sourceDir, "/")), "")
+
+  allFiles <- allFiles[ ! allFiles %in% contentFiles ]
+
+  # prepare destination directories
+  destDir <- str_c(dir, "/build")
+  allDirs <- unique(dirname(str_c(destDir, "/", allFiles)))
+  status <- llply(allDirs, dir.create, showWarnings=FALSE)
+
+  # copy all files
+  message("Moving to destination")
+  status <- laply(allFiles, function(file) {
+    file.copy(from=str_c(sourceDir, "/", file), to=str_c(destDir, "/", file))
+  }, .progress="text")
+  # file.copy(from=sourceDir, to=destDir, overwrite=TRUE, recursive=TRUE)
+
+  # remove rendered files
+  file.remove(renderedFiles)
+
+  return(invisible(destDir))
+}
+

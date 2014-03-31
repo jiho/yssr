@@ -9,3 +9,9 @@ Depends:
 License: GPL-3
 LazyData: true
 Roxygen: list(wrap = FALSE)
+Imports:
+    plyr,
+    stringr,
+    knitr,
+    brew,
+    tools
