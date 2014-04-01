@@ -1,7 +1,9 @@
 # Import all HTML generating functions from shiny
-#' importFrom shiny tag tags
-#' importFrom shiny p h1 h2 h3 h4 h5 h6 a br div span pre code img string em hr tags
-
+#' @name HTML
+#'
+#' @importFrom shiny tag tags
+#' @importFrom shiny p h1 h2 h3 h4 h5 h6 a br div span pre code img em hr tags
+NULL
 
 #' Create an HTML link
 #'
@@ -30,6 +32,7 @@ ul <- function(x, ...) {
 
 # method for vectors
 #' @export
+#' @importFrom plyr llply
 ul.default <- function(x, ...) {
   tags$ul(
     llply(x, tags$li),
@@ -39,6 +42,7 @@ ul.default <- function(x, ...) {
 
 # method for lists, possibly nested
 #' @export
+#' @importFrom plyr llply
 ul.list <- function(x, ...) {
   tags$ul(
     llply(x, function(X) {
@@ -68,6 +72,7 @@ ol <- function(x, ...) {
 
 # method for vectors
 #' @export
+#' @importFrom plyr llply
 ol.default <- function(x, ...) {
   tags$ol(
     llply(x, tags$li)
@@ -76,6 +81,7 @@ ol.default <- function(x, ...) {
 
 # method for lists, possibly nested
 #' @export
+#' @importFrom plyr llply
 ol.list <- function(x, ...) {
   tags$ol(
     llply(x, function(X) {
