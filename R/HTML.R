@@ -93,3 +93,40 @@ ol.list <- function(x, ...) {
     })
   )
 }
+
+#' Display an HTML table
+#'
+#' @param x a data.frame, 2D matrix, table, etc. to be displayed as an HTML table
+#' @param ... passed to \code{\link{shiny::tags}$table}
+#' @export
+#' @importFrom plyr llply alply
+display_table <- function(x, ...) {
+  if ( is.null(nrow(x)) ) {
+    stop("x is not a table")
+  }
+  if ( nrow(x) == 0 ) {
+    warning("nothing to display")
+  } else {
+    out <- tags$table(
+      # header
+      if (length(colnames(x)) != 0) {
+        tags$tr(
+          llply(colnames(x), tags$th)
+        )
+      }
+      ,
+      # content
+      alply(x, 1, function(row) {
+        tags$tr(
+          llply(row, tags$td)  
+        )
+      })
+    ) 
+  }
+  
+  return(out)
+}
+
+
+
+
