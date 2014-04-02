@@ -116,13 +116,16 @@ render <- function(dir=getwd(), ...) {
 
   # render all content files
   message("Rendering")
+  wd <- getwd()
   renderedFiles <- laply(onlyContentFiles, function(file) {
     message(file)
+    setwd(dirname(file))
     render_file(
       file=file,
       layout=str_c(sourceDir, "/layouts/main.brew")
     )
   }, .progress="none")
+  setwd(wd)
 
 
   ## Move the content to the destination directory
