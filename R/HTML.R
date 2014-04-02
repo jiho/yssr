@@ -2,7 +2,7 @@
 #' @name HTML
 #'
 #' @importFrom shiny tag tags
-#' @importFrom shiny p h1 h2 h3 h4 h5 h6 a br div span pre code img em hr tags
+#' @importFrom shiny p h1 h2 h3 h4 h5 h6 a br div span pre code img em tags
 NULL
 
 #' Create an HTML link
