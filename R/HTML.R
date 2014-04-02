@@ -104,19 +104,39 @@ ol.list <- function(x, ...) {
   return(as.character(out))
 }
 
-#' Display an HTML table
+#' Create an HTML table
 #'
 #' @param x a data.frame, 2D matrix, table, etc. to be displayed as an HTML table
+#' @param digits number of digits to display for numeric columns; default is all digits
 #' @param ... passed to \code{\link{shiny::tags}$table}
+#'
+#' @examples
+#' d <- data.frame(a=1:3, b=runif(3))
+#' display_table(d)
+#' display_table(d, digits=3)
+#'
 #' @export
 #' @importFrom plyr llply alply
-display_table <- function(x, ...) {
+display_table <- function(x, digits=NULL, ...) {
   if ( is.null(nrow(x)) ) {
     stop("x is not a table")
   }
+
   if ( nrow(x) == 0 ) {
+
     warning("nothing to display")
+
   } else {
+
+    # round numeric columns if necessary
+    if ( ! is.null(digits) ) {
+      for (j in 1:ncol(x)) {
+        if ( is.numeric(x[,j]) ) {
+          x[,j] <- round(x[,j], digits=digits)
+        }
+      }
+    }
+
     out <- tags$table(
       # header
       if (length(colnames(x)) != 0) {
