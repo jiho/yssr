@@ -84,7 +84,7 @@ render <- function(dir=getwd(), ...) {
   # remove final slash, perform path expansion
   dir <- normalizePath(dir)
   sourceDir <- str_c(dir, "/source")
-  
+
   ## Run code
 
   # list all R source files
@@ -94,13 +94,15 @@ render <- function(dir=getwd(), ...) {
   allFiles <- list.files(sourceDir, recursive=TRUE, full=TRUE)
 
   # run code in each file, from the directory in which each file is
+  message("Running R files")
   wd <- getwd()
   l_ply(codeFiles, function(file) {
+    message(file)
     setwd(dirname(file))
     source(file)
   })
   setwd(wd)
-  
+
   # detect new files
   newAllFiles <- list.files(sourceDir, recursive=TRUE, full=TRUE)
   generatedFiles <- newAllFiles[ ! newAllFiles %in% allFiles ]
@@ -124,7 +126,7 @@ render <- function(dir=getwd(), ...) {
       file=file,
       layout=str_c(sourceDir, "/layouts/main.brew")
     )
-  }, .progress="none")
+  })
   setwd(wd)
 
 
