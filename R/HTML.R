@@ -1,6 +1,7 @@
-# Import all HTML generating functions from shiny
+# Import all HTML tag functions from shiny
 #' @name HTML
 #'
+#' @importFrom shiny HTML
 #' @importFrom shiny tag tags
 #' @importFrom shiny p h1 h2 h3 h4 h5 h6 a br div span pre code img em tags
 NULL
@@ -13,31 +14,35 @@ NULL
 #' @export
 link <- function(text, url) {
   out <- a(text, href=url)
-
   return(as.character(out))
 }
 
 
-#' Create an HTML unordered list
+#' Create an HTML list
 #'
-#' @param x an R object (a vector or a list), each element of which will be wrapped in \code{<li>} tags and inserted into a \code{<ul>} tag. If x is a list of lists, it will result in nested \code{<ul>} lists
-#' @param ... passed to \code{\link{shiny::tags}$ul}
+#' @param x an R object (a vector or a list), each element of which will be wrapped in \code{<li>} tags and inserted into a \code{<ul>}/\code{<ol>} tag. If x is a list of lists, it will result in nested \code{<ul>}/\code{<ol>} lists
+#' @param type the type of HTML list : unordered or ordered
+#' @param ... passed to \code{\link{shiny::tags}}
 #'
 #' @examples
-#' ul(c("a", "b", "c"))
-#' ul(list("a", list("a.1", "a.2"), "b"))
+#' display_list(c("a", "b", "c"))
+#' display_list(c("a", "b", "c"), type="ol")
+#' display_list(list("a", list("a.1", "a.2"), "b"))
+#' display_list(list("a", list("<a href='foo.html'>a.1</a>", "a.2"), "b"))
 #'
 #' @export
-ul <- function(x, ...) {
-  UseMethod("ul")
+display_list <- function(x, type=c("ul", "ol"), ...) {
+  UseMethod("display_list")
 }
 
 # method for vectors
 #' @export
 #' @importFrom plyr llply
-ul.default <- function(x, ...) {
-  out <- tags$ul(
-    llply(x, tags$li),
+display_list.default <- function(x, type=c("ul", "ol"), ...) {
+  type <- match.arg(type)
+
+  out <- tags[[type]](
+    llply(x, function(X) tags$li(HTML(X))),
     ...
   )
 
@@ -47,13 +52,15 @@ ul.default <- function(x, ...) {
 # method for lists, possibly nested
 #' @export
 #' @importFrom plyr llply
-ul.list <- function(x, ...) {
-  out <- tags$ul(
+display_list.list <- function(x, type=c("ul", "ol"), ...) {
+  type <- match.arg(type)
+
+  out <- tags[[type]](
     llply(x, function(X) {
       if (is.list(X)) {
-        ul.list(X)
+        display_list.list(X)
       } else {
-        tags$li(X)
+        tags$li(HTML(X))
       }
     }),
     ...
@@ -62,47 +69,6 @@ ul.list <- function(x, ...) {
   return(as.character(out))
 }
 
-#' Create an HTML ordered list
-#'
-#' @param x an R object (a vector or a list), each element of which will be wrapped in \code{<li>} tags and inserted into a \code{<ol>} tag. If x is a list of lists, it will result in nested \code{<ol>} lists
-#' @param ... passed to \code{\link{shiny::tags}$ol}
-#'
-#' @examples
-#' ol(c("a", "b", "c"))
-#' ol(list("a", list("a.1", "a.2"), "b"))
-#'
-#' @export
-ol <- function(x, ...) {
-  UseMethod("ol")
-}
-
-# method for vectors
-#' @export
-#' @importFrom plyr llply
-ol.default <- function(x, ...) {
-  out <- tags$ol(
-    llply(x, tags$li)
-  )
-
-  return(as.character(out))
-}
-
-# method for lists, possibly nested
-#' @export
-#' @importFrom plyr llply
-ol.list <- function(x, ...) {
-  out <- tags$ol(
-    llply(x, function(X) {
-      if (is.list(X)) {
-        ol.list(X)
-      } else {
-        tags$li(X)
-      }
-    })
-  )
-
-  return(as.character(out))
-}
 
 #' Create an HTML table
 #'
