@@ -120,17 +120,22 @@ display_table <- function(x, ...) {
     out <- tags$table(
       # header
       if (length(colnames(x)) != 0) {
-        tags$tr(
-          llply(colnames(x), tags$th)
+        tags$thead(
+          tags$tr(
+            llply(colnames(x), function(X) tags$th(HTML(X)))
+          )
         )
       }
       ,
       # content
-      alply(x, 1, function(row) {
-        tags$tr(
-          llply(row, tags$td)
-        )
-      }),
+      tags$tbody(
+        alply(x, 1, function(row) {
+          tags$tr(
+            llply(row,  function(X) tags$td(HTML(X)))
+          )
+        })
+      )
+      ,
       ...
     )
   }
