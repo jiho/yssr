@@ -14,11 +14,14 @@ toHTML <- function(text, ...) {
 #' @importFrom brew brew
 toHTML.brew <- function(text, ...) {
   out <- capture.output(brew(text=text, ...))
+  out <- str_c(out, collapse="\n")
   return(out)
 }
 
 #' @export
 #' @importFrom knitr knit2html
+#' @importFrom plyr laply
+#' @importFrom stringr str_c
 toHTML.rmd <- function(text, ...) {
   out <- knit2html(text=text, fragment.only=TRUE, quiet=TRUE, ...)
   return(out)
@@ -52,7 +55,7 @@ render_file <- function(file, layout, ...) {
   }
 
   # read payload file content in a character string
-  yield <- scan(file, what="character", sep="\n", quiet=TRUE)
+  yield <- scan(file, what="character", sep="\n", quiet=TRUE, blank.lines.skip=FALSE)
   yield <- str_c(yield, collapse="\n")
 
   # get file extension and call the appropriate rendering function
