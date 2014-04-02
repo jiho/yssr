@@ -1,52 +1,68 @@
-#' Convert markup from a templating engine into HTML
+#' Render markup from a templating engine into HTML
 #'
 #' @param text character string with markup to feed to the appropriate conversion engine. Allowed markup are:
-#' - \code{\link{brew}}, with extension \code{.brew}
-#' - \code{R markdown}, with extensions \code{.Rmd} or \code{.rmd}
-#' - \code{R HTML} for \code{\link{knitr}}, with extensions \code{.Rhtml} or \code{.rhtml}
+#' \itemize{
+#' \item \code{\link{brew}}, with extension \code{.brew}
+#' \item \code{R markdown}, with extensions \code{.Rmd} or \code{.rmd}
+#' \item \code{markdown}, with extensions \code{.md} or \code{.markdown}
+#' \item \code{R HTML} for \code{\link{knitr}}, with extensions \code{.Rhtml} or \code{.rhtml}
+#' }
 #'
 #' @export
-toHTML <- function(text, ...) {
-  UseMethod("toHTML")
+render_content <- function(text, ...) {
+  UseMethod("render_content")
 }
 
-#' @export
 #' @importFrom brew brew
-toHTML.brew <- function(text, ...) {
+#' @export
+# TODO check why the methods do not show up in the help
+render_content.brew <- function(text, ...) {
   out <- capture.output(brew(text=text, ...))
   out <- str_c(out, collapse="\n")
   return(out)
 }
 
-#' @export
 #' @importFrom knitr knit2html
 #' @importFrom plyr laply
 #' @importFrom stringr str_c
-toHTML.rmd <- function(text, ...) {
-  out <- knit2html(text=text, fragment.only=TRUE, quiet=TRUE, ...)
+#' @export
+render_content.rmd <- function(text, options=c("fragment_only", "smartypants", "base64_images"), ...) {
+  out <- knit2html(text=text, fragment.only=TRUE, quiet=TRUE, options=options, ...)
+  return(out)
+}
+
+#' @importFrom markdown markdownToHTML
+#' @export
+render_content.md <- function(text, options=c("fragment_only", "smartypants", "base64_images"), ...) {
+  out <- markdownToHTML(text=text, fragment.only=TRUE, options=options, ...)
+  return(out)
+}
+#' @export
+render_content.markdown <- render_content.md
+
+#' @importFrom knitr knit2html
+#' @export
+render_content.rhtml <- function(text, ...) {
+  out <- knit(text=text, quiet=TRUE, ...)
   return(out)
 }
 
 #' @export
-#' @importFrom knitr knit2html
-toHTML.rhtml <- function(text, ...) {
-  out <- knit(text=text, quiet=TRUE, ...)
-  return(out)
+render_content.html <- function(text, ...) {
+  return(text)
 }
 
 
 #' Render a file into a full HTML page
 #'
-#' @param file path a file containing content to render
+#' @param file path a file containing content to render through render_content()
 #' @param layout path to a layout template within which the content is to be rendered; should contain \code{yield} somewhere
 #' @export
 #' @importFrom stringr str_c
 #' @importFrom tools file_ext
 render_file <- function(file, layout, ...) {
 
-  # check payload file and template existence
-  # file <- "inst/test_site/source/index.Rmd"
-  # template <- "inst/test_site/source/templates/main.brew"
+  # check content file and template existence
   if ( ! file.exists(file) ) {
     stop("Cannot find file ", file)
   }
@@ -54,14 +70,14 @@ render_file <- function(file, layout, ...) {
     stop("Cannot find template file ", layout)
   }
 
-  # read payload file content in a character string
+  # read content file content in a character string
   yield <- scan(file, what="character", sep="\n", quiet=TRUE, blank.lines.skip=FALSE)
   yield <- str_c(yield, collapse="\n")
 
   # get file extension and call the appropriate rendering function
   ext <- file_ext(file)
   class(yield) <- c(tolower(ext), "character")
-  yield <- toHTML(yield)
+  yield <- render_content(yield)
   # TODO define other environment variables that the template can use
 
   # render the content of the yield within the template

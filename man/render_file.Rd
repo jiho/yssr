@@ -6,7 +6,7 @@
 render_file(file, layout, ...)
 }
 \arguments{
-\item{file}{path a file containing content to render}
+\item{file}{path a file containing content to render through render_content()}
 
 \item{layout}{path to a layout template within which the content is to be rendered; should contain \code{yield} somewhere}
 }
