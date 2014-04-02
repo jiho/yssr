@@ -128,10 +128,11 @@ display_table <- function(x, ...) {
       # content
       alply(x, 1, function(row) {
         tags$tr(
-          llply(row, tags$td)  
+          llply(row, tags$td)
         )
-      })
-    ) 
+      }),
+      ...
+    )
   }
 
   return(as.character(out))
