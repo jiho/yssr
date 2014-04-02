@@ -12,7 +12,9 @@ NULL
 #'
 #' @export
 link <- function(text, url) {
-  a(text, href=url)
+  out <- a(text, href=url)
+
+  return(as.character(out))
 }
 
 
@@ -34,17 +36,19 @@ ul <- function(x, ...) {
 #' @export
 #' @importFrom plyr llply
 ul.default <- function(x, ...) {
-  tags$ul(
+  out <- tags$ul(
     llply(x, tags$li),
     ...
   )
+
+  return(as.character(out))
 }
 
 # method for lists, possibly nested
 #' @export
 #' @importFrom plyr llply
 ul.list <- function(x, ...) {
-  tags$ul(
+  out <- tags$ul(
     llply(x, function(X) {
       if (is.list(X)) {
         ul.list(X)
@@ -54,6 +58,8 @@ ul.list <- function(x, ...) {
     }),
     ...
   )
+
+  return(as.character(out))
 }
 
 #' Create an HTML ordered list
@@ -74,16 +80,18 @@ ol <- function(x, ...) {
 #' @export
 #' @importFrom plyr llply
 ol.default <- function(x, ...) {
-  tags$ol(
+  out <- tags$ol(
     llply(x, tags$li)
   )
+
+  return(as.character(out))
 }
 
 # method for lists, possibly nested
 #' @export
 #' @importFrom plyr llply
 ol.list <- function(x, ...) {
-  tags$ol(
+  out <- tags$ol(
     llply(x, function(X) {
       if (is.list(X)) {
         ol.list(X)
@@ -92,6 +100,8 @@ ol.list <- function(x, ...) {
       }
     })
   )
+
+  return(as.character(out))
 }
 
 #' Display an HTML table
@@ -123,10 +133,6 @@ display_table <- function(x, ...) {
       })
     ) 
   }
-  
-  return(out)
+
+  return(as.character(out))
 }
-
-
-
-
