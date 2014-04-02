@@ -96,13 +96,13 @@ render <- function(dir=getwd(), ...) {
 
   # run code in each file, from the directory in which each file is
   message("Running R files")
-  wd <- getwd()
   l_ply(codeFiles, function(file) {
+    wd <- getwd()
+    on.exit(setwd(wd))
     message(file)
     setwd(dirname(file))
     source(file)
   })
-  setwd(wd)
 
 
   ## Render content from templates
@@ -115,8 +115,9 @@ render <- function(dir=getwd(), ...) {
 
   # render all content files
   message("Rendering")
-  wd <- getwd()
   renderedFiles <- laply(onlyContentFiles, function(file) {
+    wd <- getwd()
+    on.exit(setwd(wd))
     message(file)
     setwd(dirname(file))
     render_file(
@@ -124,7 +125,6 @@ render <- function(dir=getwd(), ...) {
       layout=str_c(sourceDir, "/layouts/main.brew")
     )
   })
-  setwd(wd)
 
 
   ## 3. Move the content to the destination directory
