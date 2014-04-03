@@ -20,25 +20,25 @@ link <- function(text, url) {
 
 #' Create an HTML list
 #'
-#' @param x an R object (a vector or a list), each element of which will be wrapped in \code{<li>} tags and inserted into a \code{<ul>}/\code{<ol>} tag. If x is a list of lists, it will result in nested \code{<ul>}/\code{<ol>} lists
+#' @param x an R object (a vector or a list), each element of which will be wrapped in \code{<li>} tags and inserted into a \code{<ul>} or \code{<ol>} tag. If x is a list of lists, it will result in nested \code{<ul>}/\code{<ol>} lists
 #' @param type the type of HTML list : unordered or ordered
 #' @param ... passed to \code{\link{shiny::tags}}
 #'
 #' @examples
-#' display_list(c("a", "b", "c"))
-#' display_list(c("a", "b", "c"), type="ol")
-#' display_list(list("a", list("a.1", "a.2"), "b"))
-#' display_list(list("a", list("<a href='foo.html'>a.1</a>", "a.2"), "b"))
+#' display_as_list(c("a", "b", "c"))
+#' display_as_list(c("a", "b", "c"), type="ol")
+#' display_as_list(list("a", list("a.1", "a.2"), "b"))
+#' display_as_list(list("a", list("<a href='foo.html'>a.1</a>", "a.2"), "b"))
 #'
 #' @export
-display_list <- function(x, type=c("ul", "ol"), ...) {
-  UseMethod("display_list")
+display_as_list <- function(x, type=c("ul", "ol"), ...) {
+  UseMethod("display_as_list")
 }
 
 # method for vectors
-#' @export
 #' @importFrom plyr llply
-display_list.default <- function(x, type=c("ul", "ol"), ...) {
+#' @export
+display_as_list.default <- function(x, type=c("ul", "ol"), ...) {
   type <- match.arg(type)
 
   out <- tags[[type]](
@@ -50,9 +50,9 @@ display_list.default <- function(x, type=c("ul", "ol"), ...) {
 }
 
 # method for lists, possibly nested
-#' @export
 #' @importFrom plyr llply
-display_list.list <- function(x, type=c("ul", "ol"), ...) {
+#' @export
+display_as_list.list <- function(x, type=c("ul", "ol"), ...) {
   type <- match.arg(type)
 
   out <- tags[[type]](
@@ -69,6 +69,18 @@ display_list.list <- function(x, type=c("ul", "ol"), ...) {
   return(as.character(out))
 }
 
+#' @rdname display_as_list
+#' @export
+display_as_ul <- function(x, ...) {
+  display_as_list(x, type="ul", ...)
+}
+
+#' @rdname display_as_list
+#' @export
+display_as_ol <- function(x, ...) {
+  display_as_list(x, type="ol", ...)
+}
+
 
 #' Create an HTML table
 #'
@@ -83,7 +95,7 @@ display_list.list <- function(x, type=c("ul", "ol"), ...) {
 #'
 #' @export
 #' @importFrom plyr llply alply
-display_table <- function(x, digits=NULL, ...) {
+display_as_table <- function(x, digits=NULL, ...) {
   if ( is.null(nrow(x)) ) {
     stop("x is not a table")
   }
