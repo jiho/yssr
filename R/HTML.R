@@ -115,6 +115,13 @@ display_as_table <- function(x, digits=NULL, ...) {
       }
     }
 
+    # convert factors to characters for representation
+    for (j in 1:ncol(x)) {
+      if ( is.factor(x[,j]) ) {
+        x[,j] <- as.character(x[,j])
+      }
+    }
+
     out <- tags$table(
       # header
       if (length(colnames(x)) != 0) {
