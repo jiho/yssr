@@ -102,7 +102,7 @@ render <- function(dir=getwd(), ...) {
   sourceDir <- str_c(dir, "/source")
 
   # record current state of the source directory (to detect new files after running the code and templating)
-  filesBefore <- list.files(sourceDir, recursive=TRUE, full=TRUE)
+  filesBefore <- list.files(sourceDir, recursive=TRUE, full=TRUE, all.files=TRUE)
 
 
   ## 1. Run code
@@ -146,7 +146,7 @@ render <- function(dir=getwd(), ...) {
   ## 3. Move the content to the destination directory
 
   # detect new files
-  filesAfter <- list.files(sourceDir, recursive=TRUE, full=TRUE)
+  filesAfter <- list.files(sourceDir, recursive=TRUE, full=TRUE, all.files=TRUE)
   generatedFiles <- filesAfter[ ! filesAfter %in% filesBefore ]
 
   # list all files to move; do not move code and template files
