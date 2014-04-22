@@ -107,13 +107,13 @@ render <- function(dir=getwd(), ...) {
   sourceDir <- str_c(dir, "/source")
 
   # record current state of the source directory (to detect new files after running the code and templating)
-  filesBefore <- list.files(sourceDir, recursive=TRUE, full=TRUE, all.files=TRUE)
+  filesBefore <- list.files(sourceDir, recursive=TRUE, full.names=TRUE, all.files=TRUE)
 
 
   ## 1. Run code
 
   # list all R source files
-  codeFiles <- list.files(sourceDir, pattern=c("(R|r)$"), recursive=TRUE, full=TRUE)
+  codeFiles <- list.files(sourceDir, pattern=c("(R|r)$"), recursive=TRUE, full.names=TRUE)
 
   # run code in each file, from the directory in which each file is
   message("Running R files")
@@ -129,13 +129,13 @@ render <- function(dir=getwd(), ...) {
   ## 2. Render content from templates
 
   # list files written in a templating language
-  templatedFiles <- list.files(sourceDir, pattern=c("(Rmd|rmd|brew|rhtml|Rhtml)$"), recursive=TRUE, full=TRUE)
+  templatedFiles <- list.files(sourceDir, pattern=c("(Rmd|rmd|brew|rhtml|Rhtml)$"), recursive=TRUE, full.names=TRUE)
   # remove layout templates
   isLayout <- str_detect(templatedFiles, fixed("source/layouts/"))
   templatedFiles <- templatedFiles[ ! isLayout ]
 
   # # list html files and detect wether they are fully formed or need to be integrated in a layout template
-  # htmlFiles <- list.files(sourceDir, pattern=c("(html)$"), recursive=TRUE, full=TRUE)
+  # htmlFiles <- list.files(sourceDir, pattern=c("(html)$"), recursive=TRUE, full.names=TRUE)
   # isFullyFormed <- laply(htmlFiles, function(file) {
   #   firstLine <- scan()
   # })
@@ -161,7 +161,7 @@ render <- function(dir=getwd(), ...) {
   ## 3. Move the content to the destination directory
 
   # detect new files
-  filesAfter <- list.files(sourceDir, recursive=TRUE, full=TRUE, all.files=TRUE)
+  filesAfter <- list.files(sourceDir, recursive=TRUE, full.names=TRUE, all.files=TRUE)
   generatedFiles <- filesAfter[ ! filesAfter %in% filesBefore ]
 
   # list all files to move; do not move code and template files
