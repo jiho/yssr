@@ -56,7 +56,7 @@ display_as_list.list <- function(x, type=c("ul", "ol"), ...) {
   out <- tags[[type]](
     llply(x, function(X) {
       if (is.list(X)) {
-        display_list.list(X)
+        display_as_list.list(X)
       } else {
         tags$li(HTML(X))
       }
@@ -88,8 +88,8 @@ display_as_ol <- function(x, ...) {
 #'
 #' @examples
 #' d <- data.frame(a=1:3, b=runif(3))
-#' display_table(d)
-#' display_table(d, digits=3)
+#' display_as_table(d)
+#' display_as_table(d, digits=3)
 #'
 #' @export
 #' @importFrom plyr llply alply
