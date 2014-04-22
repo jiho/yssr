@@ -9,6 +9,6 @@ obscure_email(email)
 \item{email}{character string which is an email address}
 }
 \description{
-Obscure email address by converting characters to their unicode hex code. This procedure will indeed fool many, if not most, address-harvesting bots, but it definitely won’t fool all of them.
+Obscure email address by converting characters to their unicode hex code. This procedure will indeed fool many, if not most, address-harvesting bots, but it definitely won't fool all of them.
 }
 
