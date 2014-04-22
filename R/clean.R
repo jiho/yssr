@@ -1,3 +1,8 @@
+#' Remove the build directory
+#'
+#' @param dir directory containing the website (contains "source" and "build")
+#' @param ... further arguments passed to or from other methods.
+#'
 #' @export
 #' @importFrom stringr str_c
 clean <- function(dir=getwd(), ...) {

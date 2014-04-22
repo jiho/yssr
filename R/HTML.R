@@ -1,6 +1,4 @@
 # Import all HTML tag functions from shiny
-#' @name HTML
-#'
 #' @importFrom shiny HTML
 #' @importFrom shiny tag tags
 #' @importFrom shiny p h1 h2 h3 h4 h5 h6 a br div span pre code img em tags
@@ -22,7 +20,7 @@ link <- function(text, url) {
 #'
 #' @param x an R object (a vector or a list), each element of which will be wrapped in \code{<li>} tags and inserted into a \code{<ul>} or \code{<ol>} tag. If x is a list of lists, it will result in nested \code{<ul>}/\code{<ol>} lists
 #' @param type the type of HTML list : unordered or ordered
-#' @param ... passed to \code{\link{shiny::tags}}
+#' @param ... passed to \code{shiny::tags}
 #'
 #' @examples
 #' display_as_list(c("a", "b", "c"))
@@ -86,7 +84,7 @@ display_as_ol <- function(x, ...) {
 #'
 #' @param x a data.frame, 2D matrix, table, etc. to be displayed as an HTML table
 #' @param digits number of digits to display for numeric columns; default is all digits
-#' @param ... passed to \code{\link{shiny::tags}$table}
+#' @param ... passed to \code{shiny::tags$table}
 #'
 #' @examples
 #' d <- data.frame(a=1:3, b=runif(3))

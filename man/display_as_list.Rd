@@ -16,7 +16,7 @@ display_as_ol(x, ...)
 
 \item{type}{the type of HTML list : unordered or ordered}
 
-\item{...}{passed to \code{\link{shiny::tags}}}
+\item{...}{passed to \code{shiny::tags}}
 }
 \description{
 Create an HTML list

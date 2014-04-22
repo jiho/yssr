@@ -7,6 +7,7 @@
 #' \item \code{markdown}, with extensions \code{.md} or \code{.markdown}
 #' \item \code{R HTML} for \code{\link{knitr}}, with extensions \code{.Rhtml} or \code{.rhtml}
 #' }
+#' @param ... further arguments passed to or from other methods.
 #'
 #' @export
 render_content <- function(text, ...) {
@@ -57,6 +58,8 @@ render_content.html <- function(text, ...) {
 #'
 #' @param file path a file containing content to render through render_content()
 #' @param layout path to a layout template within which the content is to be rendered; should contain \code{yield} somewhere
+#' @param ... further arguments passed to or from other methods.
+#'
 #' @export
 #' @importFrom stringr str_c
 #' @importFrom tools file_ext
@@ -92,6 +95,8 @@ render_file <- function(file, layout, ...) {
 #' Render the full website
 #'
 #' @param dir directory containing the website (contains "source")
+#' @param ... further arguments passed to or from other methods.
+#'
 #' @export
 #' @importFrom stringr str_c str_replace str_detect fixed
 #' @importFrom plyr laply l_ply

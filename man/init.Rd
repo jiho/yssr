@@ -7,6 +7,8 @@ init(dir = getwd(), ...)
 }
 \arguments{
 \item{dir}{name/path to a directory to hold the website. Will be created if it does not exists}
+
+\item{...}{further arguments passed to or from other methods.}
 }
 \description{
 Initialise an yssr website

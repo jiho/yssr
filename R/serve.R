@@ -1,3 +1,7 @@
+#' Serve the local website
+#'
+#' @param dir directory containing the website (contains "source" and "build")
+#'
 #' @export
 serve <- function(dir=getwd()) {
   # remove final slash, perform path expansion

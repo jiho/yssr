@@ -13,6 +13,8 @@ render_content(text, ...)
 \item \code{markdown}, with extensions \code{.md} or \code{.markdown}
 \item \code{R HTML} for \code{\link{knitr}}, with extensions \code{.Rhtml} or \code{.rhtml}
 }}
+
+\item{...}{further arguments passed to or from other methods.}
 }
 \description{
 Render markup from a templating engine into HTML

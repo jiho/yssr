@@ -7,6 +7,8 @@ render(dir = getwd(), ...)
 }
 \arguments{
 \item{dir}{directory containing the website (contains "source")}
+
+\item{...}{further arguments passed to or from other methods.}
 }
 \description{
 Render the full website

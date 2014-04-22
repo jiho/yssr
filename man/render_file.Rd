@@ -9,6 +9,8 @@ render_file(file, layout, ...)
 \item{file}{path a file containing content to render through render_content()}
 
 \item{layout}{path to a layout template within which the content is to be rendered; should contain \code{yield} somewhere}
+
+\item{...}{further arguments passed to or from other methods.}
 }
 \description{
 Render a file into a full HTML page

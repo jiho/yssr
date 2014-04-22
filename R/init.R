@@ -1,7 +1,8 @@
 #' Initialise an yssr website
 #'
 #' @param dir name/path to a directory to hold the website. Will be created if it does not exists
-#' 
+#' @param ... further arguments passed to or from other methods.
+#'
 #' @importFrom stringr str_c
 #' @export
 init <- function(dir=getwd(), ...) {

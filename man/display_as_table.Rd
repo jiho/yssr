@@ -10,14 +10,14 @@ display_as_table(x, digits = NULL, ...)
 
 \item{digits}{number of digits to display for numeric columns; default is all digits}
 
-\item{...}{passed to \code{\link{shiny::tags}$table}}
+\item{...}{passed to \code{shiny::tags$table}}
 }
 \description{
 Create an HTML table
 }
 \examples{
 d <- data.frame(a=1:3, b=runif(3))
-display_table(d)
-display_table(d, digits=3)
+display_as_table(d)
+display_as_table(d, digits=3)
 }
 
