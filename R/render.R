@@ -121,17 +121,27 @@ render <- function(dir=getwd(), ...) {
   })
 
 
-  ## Render content from templates
+  ## 2. Render content from templates
 
   # list files written in a templating language
   templatedFiles <- list.files(sourceDir, pattern=c("(Rmd|rmd|brew|rhtml|Rhtml)$"), recursive=TRUE, full=TRUE)
   # remove layout templates
-  isTemplate <- str_detect(templatedFiles, fixed("source/layouts/"))
-  onlyContentFiles <- templatedFiles[ ! isTemplate ]
+  isLayout <- str_detect(templatedFiles, fixed("source/layouts/"))
+  templatedFiles <- templatedFiles[ ! isLayout ]
+
+  # # list html files and detect wether they are fully formed or need to be integrated in a layout template
+  # htmlFiles <- list.files(sourceDir, pattern=c("(html)$"), recursive=TRUE, full=TRUE)
+  # isFullyFormed <- laply(htmlFiles, function(file) {
+  #   firstLine <- scan()
+  # })
+  #
+  # contentFiles <- c(templatedFiles, htmlFiles)
+  # TODO Sort out how to use html files in a layout since those would need be overwritten with the current way of doing things
+  contentFiles <- templatedFiles
 
   # render all content files
   message("Rendering")
-  renderedFiles <- laply(onlyContentFiles, function(file) {
+  renderedFiles <- laply(contentFiles, function(file) {
     wd <- getwd()
     on.exit(setwd(wd))
     cat(str_replace(file, fixed(str_c(sourceDir, "/")), "  "), "\n")
