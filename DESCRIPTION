@@ -14,4 +14,6 @@ Imports:
     stringr,
     knitr,
     brew,
-    tools
+    tools,
+    markdown,
+    shiny
