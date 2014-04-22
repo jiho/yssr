@@ -40,7 +40,7 @@ render_content.md <- function(text, options=c("fragment_only", "smartypants", "b
 #' @export
 render_content.markdown <- render_content.md
 
-#' @importFrom knitr knit2html
+#' @importFrom knitr knit
 #' @export
 render_content.rhtml <- function(text, ...) {
   out <- knit(text=text, quiet=TRUE, ...)
