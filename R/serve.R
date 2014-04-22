@@ -9,6 +9,8 @@ serve <- function(dir=getwd()) {
   buildDir <- str_c(dir, "/build")
   
   status <- system(str_c("cd \"", buildDir, "\"; open http://0.0.0.0:8000; python -m SimpleHTTPServer"))
+  # TODO check for python and fall back on opening files directory.
+  # TODO open is OS X only
 
   return(invisible(status))
 }

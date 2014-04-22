@@ -166,6 +166,7 @@ render <- function(dir=getwd(), ...) {
 
   # list all files to move; do not move code and template files
   filesToMove <- filesAfter[ ! filesAfter %in% c(codeFiles, templatedFiles) ]
+  # TODO do not move layout files either
 
   # prepare destination directories
   filesDestinations <- str_replace(filesToMove, fixed("/source/"), "/build/")
