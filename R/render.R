@@ -95,12 +95,13 @@ render_file <- function(file, layout, ...) {
 #' Render the full website
 #'
 #' @param dir directory containing the website (contains "source")
+#' @param exclude character string (regular expression) designating files to exclude from being copied in the destination directory. By default exclude xls, xlsx and csv files which are usually used to contain data from which the website is generated
 #' @param ... further arguments passed to or from other methods.
 #'
 #' @export
 #' @importFrom stringr str_c str_replace str_detect fixed
 #' @importFrom plyr laply l_ply
-render <- function(dir=getwd(), ...) {
+render <- function(dir=getwd(), exclude=glob2rx("*.xls|xlsx|csv"), ...) {
 
   # remove final slash, perform path expansion
   dir <- normalizePath(dir)
@@ -108,6 +109,7 @@ render <- function(dir=getwd(), ...) {
 
   # record current state of the source directory (to detect new files after running the code and templating)
   filesBefore <- list.files(sourceDir, recursive=TRUE, full.names=TRUE, all.files=TRUE)
+  # TODO copy to build dir and build there, there remove unwanted files. This way if things mess up the content, it's not in the main copy
 
 
   ## 1. Run code
@@ -167,6 +169,11 @@ render <- function(dir=getwd(), ...) {
   # list all files to move; do not move code and template files
   filesToMove <- filesAfter[ ! filesAfter %in% c(codeFiles, templatedFiles) ]
   # TODO do not move layout files either
+  # exclude some files
+  if ( ! is.null(exclude) ) {
+    toExclude <- str_detect(filesToMove, pattern=exclude)
+    filesToMove <- filesToMove[!toExclude]
+  }
 
   # prepare destination directories
   filesDestinations <- str_replace(filesToMove, fixed("/source/"), "/build/")
