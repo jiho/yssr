@@ -134,6 +134,7 @@ render <- function(dir=getwd(), exclude=glob2rx("*.xls|xlsx|csv"), ...) {
   templatedFiles <- list.files(sourceDir, pattern=c("(Rmd|rmd|brew|rhtml|Rhtml)$"), recursive=TRUE, full.names=TRUE)
   # remove layout templates
   isLayout <- str_detect(templatedFiles, fixed("source/layouts/"))
+  layoutFiles <- templatedFiles[ isLayout ]
   templatedFiles <- templatedFiles[ ! isLayout ]
 
   # # list html files and detect wether they are fully formed or need to be integrated in a layout template
@@ -167,8 +168,8 @@ render <- function(dir=getwd(), exclude=glob2rx("*.xls|xlsx|csv"), ...) {
   generatedFiles <- filesAfter[ ! filesAfter %in% filesBefore ]
 
   # list all files to move; do not move code and template files
-  filesToMove <- filesAfter[ ! filesAfter %in% c(codeFiles, templatedFiles) ]
-  # TODO do not move layout files either
+  filesToMove <- filesAfter[ ! filesAfter %in% c(codeFiles, templatedFiles, layoutFiles) ]
+
   # exclude some files
   if ( ! is.null(exclude) ) {
     toExclude <- str_detect(filesToMove, pattern=exclude)
