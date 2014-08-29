@@ -16,4 +16,5 @@ Imports:
     brew,
     tools,
     markdown,
-    shiny
+    shiny,
+    dplyr
