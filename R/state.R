@@ -7,6 +7,7 @@
 #'
 #' @importFrom stringr str_detect str_c
 #' @export
+# TODO make it internal, make it relative to current directory, make exclude NULL by default
 list_site_files <- function(dir=getwd(), exclude=glob2rx("*.xls|xlsx|csv")) {
   
   # get absolute path to source directory

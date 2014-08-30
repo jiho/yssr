@@ -10,6 +10,8 @@
 #' @importFrom plyr laply l_ply
 build <- function(dir=getwd(), ...) {
 
+  # TODO use setwd() here and then work with relative paths
+
   # get the initial state of the website source
   initState <- get_info(list_site_files(dir=dir, ...))
   if ( nrow(initState) == 0 ) {
