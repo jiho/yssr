@@ -24,7 +24,7 @@ capitalize <- capitalise
 #' @export
 form_bootstrap <- function(action, ..., method="post", `accept-charset`="utf-8") {
   method <- match.arg(method, choices=c("post","get"))
-  as.character(tags$form(action=action, method=method, `accept-charset`=`accept-charset`, ...))
+  as.character(tags$form(action=action, method=method, `accept-charset`=`accept-charset`, enctype="multipart/form-data", ...))
 }
 form_bs <- form_bootstrap
 
