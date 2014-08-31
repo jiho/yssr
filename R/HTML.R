@@ -1,7 +1,7 @@
 # Import all HTML tag functions from shiny
 #' @importFrom shiny HTML
 #' @importFrom shiny tag tags
-#' @importFrom shiny p h1 h2 h3 h4 h5 h6 a br div span pre code img em tags
+#' @importFrom shiny p h1 h2 h3 h4 h5 h6 a br div span pre code img em
 NULL
 
 #' Create an HTML link
