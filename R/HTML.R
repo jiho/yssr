@@ -16,6 +16,32 @@ link <- function(text, url) {
 }
 
 
+#' Toggle a logical value into an attribute for an HTML tag
+#'
+#' Attributes are set in HTML tags by setting them to NA. This is not very human-readable. It is more understandable to set them to TRUE to set the attribute and to FALSE not to set it.
+#'
+#' @param x logical value
+#'
+#' @export
+#' @examples
+#' library("shiny")
+#' tags$input(name="Foo", required=toggle_attribute(FALSE))
+#' tags$input(name="Foo", required=NULL)
+#' tags$input(name="Foo", required=toggle_attribute(TRUE))
+#' tags$input(name="Foo", required=NA)
+toggle_attribute <- function(x) {
+  if (!is.logical(x)) {
+    stop("Attributes to be toggled need to be logical")
+  }
+  if (x) {
+    out <- NA
+  } else {
+    out <- NULL
+  }
+  return(out)
+}
+
+
 #' Create an HTML list
 #'
 #' @param x an R object (a vector or a list), each element of which will be wrapped in \code{<li>} tags and inserted into a \code{<ul>} or \code{<ol>} tag. If x is a list of lists, it will result in nested \code{<ul>}/\code{<ol>} lists
