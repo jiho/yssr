@@ -12,9 +12,9 @@ render(file, layout, dest, ...)
 \item{".rmd"}{R markdown template, rendered by \code{\link[knitr]{knit2html}}}
 \item{".rhtml"}{R html template, rendered by \code{\link[knitr]{knit}}}
 \item{".md" or ".markdown"}{markdown template, rendered by \code{\link[markdown]{markdownToHTML}}}
-\item{".html" or ".php"}{HTML or PHP code, passed through to be inserted in the layout template}
 }
-NB: the case of the extension does not matter, e.g. \code{"Rmd"} and \code{"rmd"} are equivalent}
+NB: the case of the extension does not matter, e.g. \code{"Rmd"} and \code{"rmd"} are equivalent.
+NB: to insert raw HTML or PHP into the layout template, just give the file an extension \code{".brew"}.}
 
 \item{layout}{path to layout template file}
 

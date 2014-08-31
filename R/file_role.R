@@ -13,7 +13,7 @@ file_role <- function(path) {
   # lowercase version of file extensions for all possible roles
   knownTypes <- list(
     code = c("r"),
-    template = c("brew", "html", "markdown", "md", "php", "rhtml", "rmd")
+    template = c("brew", "markdown", "md", "rhtml", "rmd")
   )
   # make it into a single vector
   knownTypes <- unlist(knownTypes)
