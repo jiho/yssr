@@ -3,12 +3,10 @@
 \alias{clean}
 \title{Remove the build directory}
 \usage{
-clean(dir = getwd(), ...)
+clean(dir = getwd())
 }
 \arguments{
 \item{dir}{directory containing the website (contains "source" and "build")}
-
-\item{...}{further arguments passed to or from other methods.}
 }
 \description{
 Remove the build directory

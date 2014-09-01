@@ -1,16 +1,27 @@
 #' Remove the build directory
 #'
 #' @param dir directory containing the website (contains "source" and "build")
-#' @param ... further arguments passed to or from other methods.
 #'
 #' @export
 #' @importFrom stringr str_c
-clean <- function(dir=getwd(), ...) {
+clean <- function(dir=getwd()) {
 
   # remove final slash, perform path expansion
   dir <- normalizePath(dir)
   buildDir <- str_c(dir, "/build")
 
-  system(str_c("rm -Rf ", buildDir))
-  # TODO make that system agnostic using file.remove
+  f <- list.files(buildDir, recursive=TRUE, full.names=TRUE, all.files=TRUE)
+  d <- rev(list.dirs(buildDir, recursive=TRUE, full.names=TRUE))
+  # NB: rev to put containing directory last
+
+  all <- c(f, d)
+
+  status <- file.remove(all)
+  
+  nonRemovedFiles <- all[ ! status ]
+  if ( length(nonRemovedFiles) > 0 ) {
+    stop("Cannot remove files :\n  ", str_c(nonRemovedFiles, collapse="\n  "))
+  }
+
+  return(invisible(TRUE))
 }
