@@ -23,6 +23,30 @@ link <- function(url, text=url, ...) {
   return(url)
 }
 
+
+#' Create mailto links
+#'
+#' Create \code{a} tag(s) with \code{href=mailto}. The function is vectorised over the inputs.
+#'
+#' @param address vector of character strings containing email addresses
+#' @param text vector of character strings containing text of for the links. By default, the email address
+#' @param obscure wether to obscure the email address with \code{\link{obscure_email}}
+#'
+#' @export
+#' @seealso \code{\link{obscure_email}}
+mailto <- function(address, text=NULL, obscure=TRUE) {
+  if ( obscure ) {
+    address <- obscure_email(address)
+  }
+  if ( is.null(text) ) {
+    text <- address
+  } else {
+    if (length(address) != length(text)) {
+      stop("Need as many text descriptions as email addresses")
+    }
+  }
+  out <- str_c("<a href=\"mailto:", address, "\">", text, "</a>")
+  return(out)
 }
 
 
