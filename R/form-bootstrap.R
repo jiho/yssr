@@ -1,18 +1,3 @@
-#' Capitalise string
-#'
-#' Turn the first letter of a string into its capital version
-#'
-#' @param x a vector of character strings
-#'
-#' @importFrom stringr str_sub str_c
-#' @export
-capitalise <- function(x) {
-  first <- str_sub(x, 1, 1)
-  rest <- str_sub(x, 2, nchar(x))
-  str_c(toupper(first), rest)
-}
-capitalize <- capitalise
-
 #' Bootstrap form elements
 #'
 #' @param action action link for the form
