@@ -31,10 +31,11 @@ link <- function(url, text=url, ...) {
 #' @param address vector of character strings containing email addresses
 #' @param text vector of character strings containing text of for the links. By default, the email address
 #' @param obscure wether to obscure the email address with \code{\link{obscure_email}}
+#' @param ... passed to \code{link[shiny]{a}}
 #'
 #' @export
 #' @seealso \code{\link{obscure_email}}
-mailto <- function(address, text=NULL, obscure=TRUE) {
+mailto <- function(address, text=NULL, obscure=TRUE, ...) {
   if ( obscure ) {
     address <- obscure_email(address)
   }
@@ -45,8 +46,10 @@ mailto <- function(address, text=NULL, obscure=TRUE) {
       stop("Need as many text descriptions as email addresses")
     }
   }
-  out <- str_c("<a href=\"mailto:", address, "\">", text, "</a>")
-  return(out)
+  for (i in seq(along=address)) {
+    text[i] <- as.character(a(text[i], href=str_c("mailto:",address[i]), ...))
+  }
+  return(text)
 }
 
 

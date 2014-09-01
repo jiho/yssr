@@ -3,7 +3,7 @@
 \alias{mailto}
 \title{Create mailto links}
 \usage{
-mailto(address, text = NULL, obscure = TRUE)
+mailto(address, text = NULL, obscure = TRUE, ...)
 }
 \arguments{
 \item{address}{vector of character strings containing email addresses}
@@ -11,6 +11,8 @@ mailto(address, text = NULL, obscure = TRUE)
 \item{text}{vector of character strings containing text of for the links. By default, the email address}
 
 \item{obscure}{wether to obscure the email address with \code{\link{obscure_email}}}
+
+\item{...}{passed to \code{link[shiny]{a}}}
 }
 \description{
 Create \code{a} tag(s) with \code{href=mailto}. The function is vectorised over the inputs.
