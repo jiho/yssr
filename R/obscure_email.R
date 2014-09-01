@@ -5,17 +5,19 @@
 #' @param email character string which is an email address
 #'
 #' @importFrom stringr str_c
+#' @importFrom plyr laply
 #' @export
 obscure_email <- function(email) {
   
-  # convert each character of the email adress into its unicode integer
-  unicode_characters <- utf8ToInt(email)
-  # convert integers into hex mode
-  hex_characters <- as.hexmode(unicode_characters)
-  # make those html entities
-  entities <- str_c("&#x", hex_characters, ";")
-  # reassemble the address, now encoded
-  out <- str_c(entities, collapse="")
+  laply(email, function(x) {
+    # convert each character of the email address into its unicode integer
+    unicode_characters <- utf8ToInt(x)
+    # convert integers into hex mode
+    hex_characters <- as.hexmode(unicode_characters)
+    # make those html entities
+    entities <- str_c("&#x", hex_characters, ";")
+    # reassemble the address, now encoded
+    out <- str_c(entities, collapse="")
+  })
 
-  return(out)
 }

@@ -4,15 +4,25 @@
 #' @importFrom shiny p h1 h2 h3 h4 h5 h6 a br div span pre code img em
 NULL
 
-#' Create an HTML link
+#' Create HTML links
 #'
-#' @param text text of the link, what is displayed
-#' @param url url to which the link points
+#' Create \code{a} tag(s). The function is vectorised over the inputs.
+#'
+#' @param text vector of character strings containing the text of the links; what is displayed
+#' @param url vector of character strings containing the url to which the links point
+#' @param ... passed to \code{link[shiny]{a}}
 #'
 #' @export
-link <- function(text, url) {
-  out <- a(text, href=url)
-  return(as.character(out))
+link <- function(url, text=url, ...) {
+  if (length(url) != length(text)) {
+    stop("Need as many text descriptions as urls")
+  }
+  for (i in seq(along=url)) {
+    url[i] <- as.character(a(text[i], href=url[i], ...))
+  }
+  return(url)
+}
+
 }
 
 
