@@ -47,7 +47,8 @@ mailto <- function(address, text=NULL, obscure=TRUE, ...) {
     }
   }
   for (i in seq(along=address)) {
-    text[i] <- as.character(a(text[i], href=str_c("mailto:",address[i]), ...))
+    text[i] <- str_c("<a href=\"mailto:",address[i],"\">",text[i], "</a>")
+    # NB: should be using a() but this escapes HTML code in href
   }
   return(text)
 }
