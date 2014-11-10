@@ -15,6 +15,17 @@ form_bs <- form_bootstrap
 
 #' @param name name of the element, used to process form data in php
 #' @param label label of the element, visible on the page; by default, a capitalised version of the name
+#' @export
+#' @rdname form_bootstrap
+label_bs <- function(name, label) {
+  if (label == "") {
+    out <- NULL
+  } else {
+    out <- tags$label("for"=name, class="control-label", label)
+  }
+  return(out)
+}
+
 #' @param type of input. Is checked against valid HTML5 input types
 #' @param help help text, placed under the element
 #' @param required boolean, wether the input is required or not
@@ -24,7 +35,7 @@ input_bs <- function(name, label=capitalise(name), type="text", help=NULL, requi
   type <- match.arg(type, choices=c("text", "password", "datetime", "datetime-local", "date", "month", "time", "week", "number", "email", "url", "search", "tel", "color", "file"))
   required <- toggle_attribute(required)
   out <- div(class="form-group",
-    tags$label("for"=name, class="control-label", label),
+    label_bs(name, label),
     tags$input(name=name, id=name, type=type, class="form-control", required=required, ...),
     if (!is.null(help)) {
       p(class="help-block", help)
@@ -43,7 +54,7 @@ input_bs <- function(name, label=capitalise(name), type="text", help=NULL, requi
 textarea_bs <- function(name, label=capitalise(name), rows=3, help=NULL, required=FALSE, ...) {
   required <- toggle_attribute(required)
   out <- div(class="form-group",
-    tags$label("for"=name, class="control-label", label),
+    label_bs(name, label),
     tags$textarea(name=name, id=name, class="form-control", required=required, rows=rows, ...),
     if (!is.null(help)) {
       p(class="help-block", help)
