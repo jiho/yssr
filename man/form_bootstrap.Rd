@@ -17,7 +17,8 @@ radio_bs(name, choices, label = capitalise(name), ...)
 
 checkbox_bs(name, choices, label = capitalise(name), ...)
 
-select_bs(name, choices, label = capitalise(name), ...)
+select_bs(name, choices, label = capitalise(name), selected = NULL,
+  multiple = FALSE, ...)
 
 submit_bs(label = "Submit", class = "btn btn-default", ...)
 }

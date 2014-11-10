@@ -82,13 +82,27 @@ checkbox_bs <- function(name, choices, label=capitalise(name), ...) {
   return(as.character(out))
 }
 
-#' @importFrom shiny selectInput
 #' @export
 #' @rdname form_bootstrap
-select_bs <- function(name, choices, label=capitalise(name), ...) {
-  out <- div(class="form-group",
-    selectInput(inputId=name, choices=choices, label=label, ...)
-  )
+select_bs <- function(name, choices, label=capitalise(name), selected = NULL, multiple = FALSE, ...) {
+  # resolve names
+  choices <- shiny:::choicesWithNames(choices)
+
+  # default value if it's not specified
+  if (is.null(selected)) {
+    if (!multiple) selected <- shiny:::firstChoice(choices)
+  } else selected <- shiny:::validateSelected(selected, choices, name)
+
+  # create select tag and add options
+  selectTag <- tags$select(id = name, name = name, shiny:::selectOptions(choices, selected), class = "form-control", ...)
+  if (multiple) {
+    selectTag$attribs$multiple <- "multiple"
+  }
+  # browser()
+
+  # return label and select tag
+  out <- div(class="form-group", shiny:::controlLabel(name, label), selectTag)
+
   return(as.character(out))
 }
 
