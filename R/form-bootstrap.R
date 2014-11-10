@@ -44,11 +44,7 @@ input_bs <- function(name, label=capitalise(name), type="text", help=NULL, requi
   return(as.character(out))
 }
 
-#' @param name name of the element, used to process form data in php
-#' @param label label of the element, visible on the page; by default, a capitalised version of the name
-#' @param rows number of rows shown by default
-#' @param help help text, placed under the element
-#' @param required boolean, wether the input is required or not
+#' @param rows number of rows shown by default in multiline text areas
 #' @export
 #' @rdname form_bootstrap
 textarea_bs <- function(name, label=capitalise(name), rows=3, help=NULL, required=FALSE, ...) {
