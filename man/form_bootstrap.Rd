@@ -3,14 +3,21 @@
 \alias{checkbox_bs}
 \alias{form_bootstrap}
 \alias{input_bs}
+\alias{label_bs}
 \alias{radio_bs}
 \alias{select_bs}
 \alias{submit_bs}
+\alias{textarea_bs}
 \title{Bootstrap form elements}
 \usage{
 form_bootstrap(action, ..., method = "post", `accept-charset` = "utf-8")
 
+label_bs(name, label)
+
 input_bs(name, label = capitalise(name), type = "text", help = NULL,
+  required = FALSE, ...)
+
+textarea_bs(name, label = capitalise(name), rows = 3, help = NULL,
   required = FALSE, ...)
 
 radio_bs(name, choices, label = capitalise(name), ...)
@@ -40,6 +47,8 @@ submit_bs(label = "Submit", class = "btn btn-default", ...)
 \item{help}{help text, placed under the element}
 
 \item{required}{boolean, wether the input is required or not}
+
+\item{rows}{number of rows shown by default in multiline text areas}
 
 \item{choices}{a vector of possible values; if named, the content is the value tag and the names is displayed}
 
