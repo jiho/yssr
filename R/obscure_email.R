@@ -13,7 +13,7 @@ obscure_email <- function(email) {
     # convert each character of the email address into its unicode integer
     unicode_characters <- utf8ToInt(x)
     # convert integers into hex mode
-    hex_characters <- as.hexmode(unicode_characters)
+    hex_characters <- as.character(as.hexmode(unicode_characters))
     # make those html entities
     entities <- str_c("&#x", hex_characters, ";")
     # reassemble the address, now encoded
