@@ -69,11 +69,15 @@ render_content.rmd <- function(text, options=c("fragment_only", "smartypants", "
   return(out)
 }
 
-#' @importFrom markdown markdownToHTML
+# #' @importFrom markdown markdownToHTML
 #' @export
 #' @rdname render_content
 render_content.md <- function(text, options=c("fragment_only", "smartypants", "base64_images"), ...) {
-  out <- markdownToHTML(text=text, fragment.only=TRUE, options=options, ...)
+  # out <- markdownToHTML(text=text, fragment.only=TRUE, options=options, ...)
+  tmp <- tempfile()
+  cat(text, file=tmp)
+  out <- rmarkdown::pandoc_convert(input=tmp, to="html")
+  # out <- system(paste0("echo ", text, " | pandoc --to html"), intern=T)
   return(out)
 }
 #' @export
