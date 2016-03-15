@@ -5,26 +5,37 @@ file_status
 site_state
 
 
-library(stringr)
-library(plyr)
+library("stringr")
+library("plyr")
+library("tools")
+
+dir <- "."
 
 ## List source files --------
 
 # get absolute path to source directory
 dir <- normalizePath(dir)
-sourceDir <- str_c(dir, "/source")
+source_dir <- str_c(dir, "/source")
 
 # list all files, recursively, including hidden files
-paths <- list.files(sourceDir, recursive=TRUE, all.files=TRUE)
+paths <- list.files(source_dir, recursive=TRUE, all.files=TRUE)
 
+# exclude some files
+excludes <- c("*/.git*", "*.DS_Store*", "*._*")
+# test each exclusion pattern on all files
+excluded <- aaply(excludes, 1, function(x) {
+  str_detect(paths, pattern=glob2rx(x))
+})
+excluded <- aaply(excluded, 2, any)
+paths <- paths[!excluded]
+
+# get files state
 files <- data.frame(path=paths)
 
-
 # get modification date and size
-infos <- file.info(str_c(sourceDir, paths, sep="/"))
+infos <- file.info(str_c(source_dir, paths, sep="/"))
 files$mtime <- infos$mtime
 files$size <- infos$size
-
 
 #' Guess the role of files from their extension
 #' 
@@ -38,17 +49,18 @@ file_role <- function(name) {
   ext <- tolower(ext)
 
   # lowercase version of file extensions for all possible roles
-  knownTypes <- list(
+  known_types <- list(
     code = c("r"),
-    template = c("brew", "markdown", "md", "rhtml", "rmd")
+    code_template = c("brew", "rhtml", "rmd"),
+    template = c("markdown", "md")
   )
   # make it into a single vector
-  knownTypes <- unlist(knownTypes)
+  known_types <- unlist(known_types)
   # remove numbers added to names by unlist
-  names(knownTypes) <- str_replace(names(knownTypes), "[0-9]", "")
+  names(known_types) <- str_replace(names(known_types), "[0-9]", "")
 
   # find the type of each file
-  role <- names(knownTypes)[match(ext, knownTypes)]
+  role <- names(known_types)[match(ext, known_types)]
 
   # unknown types have role "other"
   role[is.na(role)] <- "other"
@@ -91,6 +103,29 @@ file_status <- function(old, new, exclude) {
   return(new)
 }
 
+
+# build dependency matrix
+depends <- alply(files, 1, function(x) {
+  # only code files can actually "depend" on other files
+  if (x$role %in% c("code", "code_template")) {
+    # read the content of the file
+    content <- read_file(str_c("source/", x$path))
+    # and look for mentions of the name of other files
+    deps <- laply(basename(files$path), function(xx) {
+      str_detect(content, fixed(xx))
+    })
+  }
+  # for all others, just output FALSE
+  else {
+    deps <- rep(FALSE, times=nrow(files))
+  }
+
+  return(deps)
+})
+# reformat it as a matrix
+# NB: each column lists which files depend on the file in that column
+depends <- do.call(rbind, depends)
+dimnames(depends) <- list(files$path, files$path)
 
 
 
@@ -188,17 +223,17 @@ file_role <- function(path) {
   ext <- tolower(ext)
   
   # lowercase version of file extensions for all possible roles
-  knownTypes <- list(
+  known_types <- list(
     code = c("r"),
     template = c("brew", "markdown", "md", "rhtml", "rmd")
   )
   # make it into a single vector
-  knownTypes <- unlist(knownTypes)
+  known_types <- unlist(known_types)
   # remove numbers added to names by unlist
-  names(knownTypes) <- str_replace(names(knownTypes), "[0-9]", "")
+  names(known_types) <- str_replace(names(known_types), "[0-9]", "")
   
   # find the type of each file
-  roles <- names(knownTypes)[match(ext, knownTypes)]
+  roles <- names(known_types)[match(ext, known_types)]
   
   # unknown types have role "other"
   roles[is.na(roles)] <- "other"
