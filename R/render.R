@@ -75,9 +75,14 @@ render_content.rmd <- function(text, options=c("fragment_only", "smartypants", "
 render_content.md <- function(text, options=c("fragment_only", "smartypants", "base64_images"), ...) {
   # out <- markdownToHTML(text=text, fragment.only=TRUE, options=options, ...)
   tmp <- tempfile()
+  tmp2 <- tempfile()
   cat(text, file=tmp)
-  out <- rmarkdown::pandoc_convert(input=tmp, to="html")
-  # out <- system(paste0("echo ", text, " | pandoc --to html"), intern=T)
+  rmarkdown::pandoc_convert(input=tmp, from="markdown_strict+pipe_tables", to="html", output=tmp2)
+  out <- scan(tmp2, what="character", sep="\n", quiet=TRUE, blank.lines.skip=FALSE)
+  out <- str_c(out, collapse="\n")
+  file.remove(tmp)
+  file.remove(tmp2)
+  # out <- system(paste0("pandoc --to html ", tmp), intern=T)
   return(out)
 }
 #' @export
