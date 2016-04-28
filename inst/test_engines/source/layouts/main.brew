@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/basic.css" type="text/css" charset="utf-8">
+    <title>yssr Basic example</title>
+  </head>
+
+  <body>
+    <h1>Hello to <code>yssr</code></h1>
+    
+    <%= yield %>
+    
+    <p>Bye</p>
+  </body>
+
+</html>
