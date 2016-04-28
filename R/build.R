@@ -12,85 +12,59 @@ build <- function(dir=getwd(), ...) {
 
   # TODO use setwd() here and then work with relative paths
 
-  # get the initial state of the website source
-  initState <- get_info(list_site_files(dir=dir, ...))
-  if ( nrow(initState) == 0 ) {
-    stop("Cannot find source directory or source directory empty")
-  }
+  # get the current state of the website source
+  init_state <- state(dir)
+  current_state <- init_state
   
-  # initialise the list of files to be processed
-
+  system("touch test/source/phones.csv")
+  
   # get previous state of the source directory
-  dir <- normalizePath(dir)
-  stateFile <- str_c(dir, "/build/.yssrstate")
-  if ( file.exists(stateFile) ) {
-    state <- dget(stateFile)
-  } else {
-    # if it does not exist, make all files seem changed (by setting their size to something impossible)
-    state <- initState
-    state$size <- -1
-  }
+  old_state <- get_state(dir)
+  browser()
   
   # set the files that changed to be processed
-  changes <- compare_state(state, initState)
-  files <- changes$changed
+  changes <- compare_state(old_state, current_state)
 
-  if ( length(files) == 0) {
-    # message("Everything up to date")
 
-  } else {
-
-    # the current state becomes the old state
-    old <- initState
-
-    while ( length(files) > 0 ) {
-
-      # select the first file
-      file <- files[1]
-
+  while ( nrow(changes) > 0 ) {
+    # process all files in order
+    for (i in 1:nrow(changes)) {
       # process the file according to its role
       # - remove "deleted" files from destination
       # - copy "other" files to destination
       # - run code files in place
       # - render template files to destination
-      type <- file_role(file)
-      class(file) <- as.character(type)
+      file <- changes$path[i]
+      class(file) <- file_role(file)
       process(file)
-
-      # get the new state of the site (files can have been created/modified)
-      new <- get_info(list_site_files(dir=dir, ...))
-
-      # detect changes and add changed files to be (re)processed
-      changes <- compare_state(old=old, new=new)
-      files <- unique(c(files, changes$changed))
-      # # warn for un-expected behaviour
-      # if ( length(changes$deleted) ) {
-      #   warning("Files ", str_c(changes$deleted, collapse=", "), " where deleted")
-      # }
-      # if ( length(changes$modified) ) {
-      #   warning("Files ", str_c(changes$modified, collapse=", "), " where modified")
-      # }
-
-      # pop the processed files from the stack
-      files <- files[-1]
-
-      # update the state
-      old <- new
     }
 
-    # cleanup files created since the start of the function
-    changes <- compare_state(old=initState, new=new)
-    if ( length(changes$added) > 0 ) {
-      message("   clean (", length(changes$added), " files created by scripts in the source directory)")
-      file.remove(changes$added)
-    }
-
-    # save state
-    new <- get_info(list_site_files(dir=dir, ...))
-    dput(new, file=stateFile)
+    # the previously current state becomes the old state
+    old_state <- current_state
+    # recompute the new state
+    current_state <- state(dir)
+    # and compute changes
+    changes <- compare_state(old_state, current_state)
+    # when there are still changes, re-run the loop
+    
+    # TODO break after 100 runs of the loop and error out
   }
 
-  return(invisible(NULL))
+  # cleanup files created since the start of the function
+  changes <- compare_state(init_state, current_state)
+  added <- dplyr::filter(changes, status == "added")
+  n_added <- nrow(added)
+  if ( n_added > 0 ) {
+    message("   clean (", n_added, " files created in the source directory)")
+    file.remove(n_added$path)
+  }
+
+  # save state
+  current_state <- state(dir)
+  save_state(current_state)
+  # message("Everything up to date")
+
+  return(invisible(current_state))
 }
 
 #' Watch the website source for changes and process files accordingly
