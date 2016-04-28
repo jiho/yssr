@@ -18,3 +18,4 @@ Imports:
     markdown,
     shiny,
     dplyr
+RoxygenNote: 5.0.1
