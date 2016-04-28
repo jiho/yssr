@@ -44,7 +44,7 @@ get_state <- function(dir) {
 # @param previous_state, current_state two `state` data.frames as computed by \code{\link{state}}
 #
 # @return A state-like data.frame with only the files to process
-to_process <- function(previous_state, current_state) {
+compare_state <- function(previous_state, current_state) {
   # find which files changed in anyway
   deleted_modified <- dplyr::setdiff(previous_state, current_state)$path
   deleted <- dplyr::setdiff(previous_state$path, current_state$path)
