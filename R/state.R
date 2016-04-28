@@ -36,7 +36,16 @@ put_state <- function(x, dir) {
 # Get the state saved to disk
 #' @import stringr
 get_state <- function(dir) {
-  dget(file=stringr::str_c(build_dir(dir), "/.yssrstate"))
+  state_file <- stringr::str_c(build_dir(dir), "/.yssrstate")
+  if ( file.exists(state_file) ) {
+    state <- dget(state_file)
+  } else {
+    # if it does not exist, compute it and make all files seem changed
+    # (by setting their size to something impossible)
+    state <- state(dir)
+    state$size <- -1
+  }
+  return(state)
 }
 
 # Compare states and compute which files need processing
