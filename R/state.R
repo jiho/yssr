@@ -11,6 +11,9 @@ state <- function(dir, exclude=c("*/.git*", "*/.svn*", "*.DS_Store*", "*._*", "T
  
   # list all files, recursively, including hidden files
   path <- list.files(source_dir, recursive=TRUE, all.files=TRUE, full=TRUE)
+  if ( length(path) == 0 ) {
+    stop("Cannot find source directory or source directory empty")
+  }
 
   # exclude some files: version control, Mac OS stuff, Windows stuff, etc.
   path <- path[! str_detect_any(path, pattern=exclude)]
