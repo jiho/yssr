@@ -41,7 +41,7 @@ input_bs <- function(name, label=capitalise(name), type="text", help=NULL, requi
       p(class="help-block", help)
     }
   )
-  return(as.character(out))
+  return(out)
 }
 
 #' @param rows number of rows shown by default in multiline text areas
@@ -56,7 +56,7 @@ textarea_bs <- function(name, label=capitalise(name), rows=3, help=NULL, require
       p(class="help-block", help)
     }
   )
-  return(as.character(out))
+  return(out)
 }
 
 #' @importFrom shiny radioButtons
@@ -68,7 +68,7 @@ radio_bs <- function(name, choices, label=capitalise(name), ...) {
     radioButtons(inputId=name, choices=choices, label=label, ...)
     # TODO improve, this is not exactly following bootstrap's syntax
   )
-  return(as.character(out))
+  return(out)
 }
 
 #' @importFrom shiny checkboxGroupInput
@@ -79,7 +79,7 @@ checkbox_bs <- function(name, choices, label=capitalise(name), ...) {
     checkboxGroupInput(inputId=name, choices=choices, label=label, ...)
     # TODO improve, this is not exactly following bootstrap's syntax
   )
-  return(as.character(out))
+  return(out)
 }
 
 #' @export
@@ -103,7 +103,7 @@ select_bs <- function(name, choices, label=capitalise(name), selected = NULL, mu
   # return label and select tag
   out <- div(class="form-group", shiny:::controlLabel(name, label), selectTag)
 
-  return(as.character(out))
+  return(out)
 }
 
 #' @param class class of the submit button
