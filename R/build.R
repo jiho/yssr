@@ -57,25 +57,27 @@ build <- function(dir=getwd(), ...) {
       class(file) <- as.character(type)
       process(file)
 
-      # get the new state of the site (files can have been created/modified)
-      new <- get_info(list_site_files(dir=dir, ...))
+      if (type %in% "code") {
+        # get the new state of the site (files can have been created/modified)
+        new <- get_info(list_site_files(dir=dir, ...))
 
-      # detect changes and add changed files to be (re)processed
-      changes <- compare_state(old=old, new=new)
-      files <- unique(c(files, changes$changed))
-      # # warn for un-expected behaviour
-      # if ( length(changes$deleted) ) {
-      #   warning("Files ", str_c(changes$deleted, collapse=", "), " where deleted")
-      # }
-      # if ( length(changes$modified) ) {
-      #   warning("Files ", str_c(changes$modified, collapse=", "), " where modified")
-      # }
+        # detect changes and add changed files to be (re)processed
+        changes <- compare_state(old=old, new=new)
+        files <- unique(c(files, changes$changed))
+        # # warn for un-expected behaviour
+        # if ( length(changes$deleted) ) {
+        #   warning("Files ", str_c(changes$deleted, collapse=", "), " where deleted")
+        # }
+        # if ( length(changes$modified) ) {
+        #   warning("Files ", str_c(changes$modified, collapse=", "), " where modified")
+        # }
+
+        # update the state
+        old <- new
+      }
 
       # pop the processed files from the stack
       files <- files[-1]
-
-      # update the state
-      old <- new
     }
 
     # cleanup files created since the start of the function
