@@ -61,7 +61,7 @@ build <- function(dir=getwd(), ...) {
 
   # save state
   current_state <- state(dir)
-  save_state(current_state)
+  put_state(current_state)
   # message("Everything up to date")
 
   return(invisible(current_state))
