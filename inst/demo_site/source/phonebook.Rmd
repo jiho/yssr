@@ -1,0 +1,15 @@
+---
+title: "Foo bar"
+subtitle: "Par"
+date: "`r date()`"
+---
+
+# Phonebook
+
+Here are the people that matter:
+
+```{r}
+d <- read.csv("phones.csv")
+people <- link(str_c("cards/", d$index, ".html"), d$Name)
+display_as_list(people)
+```

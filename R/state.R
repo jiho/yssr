@@ -1,82 +1,111 @@
-#' List relevant files of a site
-#'
-#' List all files then exclude some file type unwanted in the output and reorder files to be processed in a specified order
-#'
-#' @param dir directory containing the website (contains "source")
-#' @param exclude character string (regular expression) designating files to exclude from being copied in the destination directory. By default, exclude xls, xlsx and csv files which are usually used to contain data from which the website is generated. Set it to NULL to exclude nothing
-#'
-#' @importFrom stringr str_detect str_c
-#' @export
-# TODO make it internal, make it relative to current directory, make exclude NULL by default
-list_site_files <- function(dir=getwd(), exclude=glob2rx("*.xls|xlsx|csv")) {
-  
-  # get absolute path to source directory
-  dir <- normalizePath(dir)
-  sourceDir <- str_c(dir, "/source")
-  
+# Compute the state of the directory dir
+#
+# List all files, exclude some, get the modification time and size of the remaining ones.
+#
+# @param dir base directory of the site
+# @param exclude vector of \emph{globbing} patterns to exclude
+# 
+# @return A data.frame with columns path, mtime and size
+state <- function(dir, exclude=c("*/.git*", "*/.svn*", "*.DS_Store*", "*._*", "Thumbs.db")) {
+  source_dir <- source_dir(dir)
+ 
   # list all files, recursively, including hidden files
-  paths <- list.files(sourceDir, recursive=TRUE, full.names=TRUE, all.files=TRUE)
-
-  # remove current R working directory from the paths, making them relative (hence shorter)
-  # paths <- str_replace(paths, fixed(str_c(getwd(), "/")), "")
-
-  # exclude file according to the exclude argument
-  if ( ! is.null(exclude) ) {
-    excluded <- str_detect(paths, pattern=exclude)
-    paths <- paths[!excluded]
+  path <- list.files(source_dir, recursive=TRUE, all.files=TRUE, full=TRUE)
+  if ( length(path) == 0 ) {
+    stop("Cannot find source directory or source directory empty")
   }
-  
-  # exclude layouts
-  paths <- paths[!str_detect(paths, pattern=glob2rx("*/source/layouts/*"))]
-  
-  # order files in the order they will need to be processed
-  # - other content files
-  # - code files
-  # - template files
-  roles <- file_role(paths)
-  paths <- paths[order(roles)]
-  
 
-  return(paths)
+  # exclude some files: version control, Mac OS stuff, Windows stuff, etc.
+  path <- path[! str_detect_any(path, pattern=exclude)]
+  # TODO exclude files based on user configuration
+
+  # get modification date and size
+  mtime <- file.mtime(path)
+  size <- file.size(path)
+
+  state <- data.frame(path, mtime, size)
+  return(state)
 }
 
-#' Get modification date and size of a file
-#'
-#' @param ... passed to \code{\link[base]{file.info}}, i.e. character vectors containing file paths.
-#'
-#' @importFrom dplyr select
-get_info <- function(...) {
-  # get file info
-  info <- file.info(...)
-  # TODO use hash
-
-  # keep only what's important
-  info$path <- row.names(info)
-  # row.names(info) <- NULL
-  info <- info[,c("path", "mtime", "size")]
-  
-  return(info)
+# Save the state as a text file to the disk
+#' @import stringr
+put_state <- function(x, dir) {
+  dput(x, file=stringr::str_c(build_dir(dir), "/.yssrstate"))
 }
 
-#' Compare two directory states
-#'
-#' @param old previous state
-#' @param new current state
-#' @return list containing number of changes \code{n}, and files which have been \code{added}, \code{deleted}, \code{modified} and overall \code{changed}
-#'
-#' @importFrom dplyr setdiff
-compare_state <- function(old, new) {
-  deleted_or_modified <- dplyr::setdiff(old, new)$path
-  added_or_modified <- dplyr::setdiff(new, old)$path
-  
-  same <- dplyr::intersect(old, new)$path
-  modified <- dplyr::intersect(deleted_or_modified, added_or_modified)
-
-  deleted <- setdiff(deleted_or_modified, modified)
-  added <- setdiff(added_or_modified, modified)
-
-  changed <- c(added, deleted, modified)
-  n <- length(changed)
-
-  list(n = n, added = added, deleted = deleted, modified = modified, changed = changed)
+# Get the state saved to disk
+#' @import stringr
+get_state <- function(dir) {
+  state_file <- stringr::str_c(build_dir(dir), "/.yssrstate")
+  if ( file.exists(state_file) ) {
+    state <- dget(state_file)
+  } else {
+    # if it does not exist, compute it and make all files seem changed
+    # (by setting their size to something impossible)
+    state <- state(dir)
+    state$size <- -1
+  }
+  return(state)
 }
+
+# Compare states and compute which files need processing
+#
+# @param previous_state, current_state two `state` data.frames as computed by \code{\link{state}}
+#
+# @return A state-like data.frame with only the files to process
+compare_state <- function(previous_state, current_state) {
+  # find which files changed in anyway
+  deleted_modified <- dplyr::setdiff(previous_state, current_state)$path
+  deleted <- dplyr::setdiff(previous_state$path, current_state$path)
+  added <- dplyr::setdiff(current_state$path, previous_state$path)
+  modified <- dplyr::setdiff(deleted_modified, deleted)
+  
+  # make a list of files and their status
+  # NB: we merge previous_state and current_state to track deleted files
+  files <- data.frame(path=unique(c(previous_state$path, current_state$path)))
+  # by default files are identical
+  files$status <- "identical"
+  # except when found not to be
+  row.names(files) <- files$path
+  files[deleted, "status"] <- "deleted"
+  files[added, "status"] <- "added"
+  files[modified, "status"] <- "modified"
+  row.names(files) <- NULL
+
+  # determine file role from extension, path, etc.
+  files$role <- sapply(files$path, file_role)
+
+  # track dependencies between files
+  deps <- plyr::aaply(files, 1, function(x) {
+    # only code files can depend on other files
+    if (x$role %in% c("code", "code_markup")) {
+      # track mention of other files in this file's content
+      content <- readr::read_file(x$path)
+      deps <- stringr::str_detect(content, stringr::fixed(basename(files$path)))
+      # TODO identically named files in various levels of the hierarchy cause problem here
+      #      to solve it we should detect the path relative to the current file, for each file => HARD
+    } else {
+      deps <- rep(FALSE, times <- nrow(files))
+    }
+    return(deps)
+  }, .expand=F)
+  
+  # all files depend on templates
+  deps[,files$role == "template"] <- TRUE
+  # TODO check whether we need to avoid having template depend on themselves
+
+  # no file can depend on a deleted file
+  deps[,files$status == "deleted"] <- FALSE
+
+  # TODO check for circular dependencies
+  
+  # process all non-identical files
+  changed <- files$status != "identical"
+  # or files that depend on changed files
+  depends_on_changed <- apply(t(deps) & changed, 2, any)
+  
+  files_to_process <- files[changed | depends_on_changed,]
+
+  return(files_to_process)
+}
+

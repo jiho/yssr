@@ -1,37 +1,45 @@
-#' Guess the role of files from their extension
-#' 
-#' @param path vector of paths to files
+#' Guess the role of files from their path and extension
 #'
-#' @importFrom tools file_ext
-#' @importFrom stringr str_replace
+#' @param path path to \emph{one} file, relative to the root of the site.
+#'
+#' @return A string with the role of the file
+#'
+#' @examples
+#' file_role("code.R")
+#' file_role("code.r")
+#' file_role("my_page.Rmd")
+#' file_role("my_page.md")
+#' file_role("my_page.html")
+#' file_role("assets/style.css")
+#' file_role("assets/logo.png")
+#' file_role("templates/main.html")
+#' 
+#' @import stringr
 file_role <- function(path) {
-  
-  # get lowercase extension
-  ext <- file_ext(path)
-  ext <- tolower(ext)
-  
-  # lowercase version of file extensions for all possible roles
-  knownTypes <- list(
-    code = c("r"),
-    template = c("brew", "markdown", "md", "rhtml", "rmd")
+  # markers of known roles: extensions, path elements, etc.
+  # NB: keep in order in which files must be processed (code first, then rest)
+  markers <- c(
+    code="\\.r$",
+    code_markup="\\.rmd$",
+    markup="\\.markdown$",
+    markup="\\.md$",
+    markup="\\.text$",
+    template="source\\/templates\\/"
   )
-  # make it into a single vector
-  knownTypes <- unlist(knownTypes)
-  # remove numbers added to names by unlist
-  names(knownTypes) <- str_replace(names(knownTypes), "[0-9]", "")
   
-  # find the type of each file
-  roles <- names(knownTypes)[match(ext, knownTypes)]
+  # detect if the file matches a given marker (i.e. role)
+  matches <- stringr::str_detect(path, stringr::regex(markers, ignore_case=TRUE))
+  # when it does, assign it, otherwise give it role "other"
+  if (any(matches)) {
+    role <- names(markers)[matches][1]
+  } else {
+    role <- "other"
+  }
   
-  # unknown types have role "other"
-  roles[is.na(roles)] <- "other"
-  
-  # detect non-existing files (deleted)
-  roles[!file.exists(path)] <- "deleted"
-  # TODO exclude code files
-  
-  # make it into an ordered factor to be able to sort in an order that follows yssr's logic: first other, then code, then templates
-  roles <- factor(roles, levels=c("deleted", "other", "code", "template"))
-   
-  return(roles)
+  # # force order of roles (for later processing)
+  # role <- factor(role, levels=c(unique(names(markers)), "other"))
+
+  return(role)
 }
+
+
