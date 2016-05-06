@@ -83,6 +83,8 @@ checkbox_bs <- function(name, choices, label=capitalise(name), ...) {
 }
 
 #' @export
+#' @param selected the initially selected value (or multiple values if \code{multiple = TRUE}). If not specified then defaults to the first value for single-select lists and no values for multiple select lists.
+#' @param multiple boolean, whether to allow selection of multiple items in select inputs
 #' @rdname form_bootstrap
 select_bs <- function(name, choices, label=capitalise(name), selected = NULL, multiple = FALSE, ...) {
   # resolve names

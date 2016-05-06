@@ -53,15 +53,11 @@ submit_bs(label = "Submit", class = "btn btn-default", ...)
 
 \item{choices}{a vector of possible values; if named, the content is the value tag and the names is displayed}
 
+\item{selected}{the initially selected value (or multiple values if \code{multiple = TRUE}). If not specified then defaults to the first value for single-select lists and no values for multiple select lists.}
+
+\item{multiple}{boolean, whether to allow selection of multiple items in select inputs}
+
 \item{class}{class of the submit button}
-
-\item{name}{name of the element, used to process form data in php}
-
-\item{label}{label of the element, visible on the page; by default, a capitalised version of the name}
-
-\item{help}{help text, placed under the element}
-
-\item{required}{boolean, wether the input is required or not}
 }
 \description{
 Bootstrap form elements

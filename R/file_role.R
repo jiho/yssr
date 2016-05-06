@@ -14,6 +14,7 @@
 #' file_role("assets/logo.png")
 #' file_role("templates/main.html")
 #' 
+#' @export
 #' @import stringr
 file_role <- function(path) {
   # markers of known roles: extensions, path elements, etc.

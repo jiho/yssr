@@ -1,6 +1,6 @@
 Package: yssr
 Title: Your Static Site in R
-Description: Static site generator in R
+Description: yssr is a static site generator in R.
 Version: 0.1
 Author: Jean-Olivier Irisson <irisson@normalesup.org>
 Maintainer: Jean-Olivier Irisson <irisson@normalesup.org>
@@ -17,5 +17,6 @@ Imports:
     tools,
     markdown,
     shiny,
-    dplyr
+    dplyr,
+    readr
 RoxygenNote: 5.0.1

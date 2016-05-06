@@ -52,7 +52,7 @@ build <- function(dir=getwd(), ...) {
 
   # cleanup files created since the start of the function
   changes <- compare_state(init_state, current_state)
-  added <- dplyr::filter(changes, status == "added")
+  added <- dplyr::filter_(changes, quote(status == "added"))
   n_added <- nrow(added)
   if ( n_added > 0 ) {
     message("   clean (", n_added, " files created in the source directory)")

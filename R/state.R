@@ -10,7 +10,7 @@ state <- function(dir, exclude=c("*/.git*", "*/.svn*", "*.DS_Store*", "*._*", "T
   source_dir <- source_dir(dir)
  
   # list all files, recursively, including hidden files
-  path <- list.files(source_dir, recursive=TRUE, all.files=TRUE, full=TRUE)
+  path <- list.files(source_dir, recursive=TRUE, all.files=TRUE, full.names=TRUE)
   if ( length(path) == 0 ) {
     stop("Cannot find source directory or source directory empty")
   }
@@ -53,6 +53,7 @@ get_state <- function(dir) {
 # @param previous_state, current_state two `state` data.frames as computed by \code{\link{state}}
 #
 # @return A state-like data.frame with only the files to process
+# @import readr
 compare_state <- function(previous_state, current_state) {
   # find which files changed in anyway
   deleted_modified <- dplyr::setdiff(previous_state, current_state)$path
