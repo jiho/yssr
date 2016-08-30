@@ -18,8 +18,8 @@ display_as_table <- function(x, digits=NULL, ...) {
 
   if ( nrow(x) == 0 ) {
 
-    warning("Nothing to display")
-    out <- ""
+    # warning("Nothing to display")
+    out <- p("Nothing to display")
 
   } else {
 
