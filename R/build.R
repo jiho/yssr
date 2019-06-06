@@ -20,7 +20,6 @@ build <- function(dir=getwd(), ...) {
   
   # get previous state of the source directory
   old_state <- get_state(dir)
-  browser()
   
   # set the files that changed to be processed
   changes <- compare_state(old_state, current_state)
