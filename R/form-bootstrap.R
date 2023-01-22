@@ -101,7 +101,7 @@ select_bs <- function(name, choices, label=capitalise(name), selected = NULL, mu
   # browser()
 
   # return label and select tag
-  out <- div(class="form-group", shiny:::controlLabel(name, label), selectTag)
+  out <- div(class="form-group", shiny:::shinyInputLabel(name, label), selectTag)
 
   return(out)
 }
