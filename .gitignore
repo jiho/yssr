@@ -1,3 +1,4 @@
+scratch/*
 inst/*/build/
 .Rhistory
 .Rproj.user
