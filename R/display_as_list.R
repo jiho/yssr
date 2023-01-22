@@ -36,13 +36,9 @@ display_as_list.list <- function(x, type=c("ul", "ol"), ...) {
   type <- match.arg(type)
 
   out <- tags[[type]](
-    llply(x, function(X) {
-      if (is.list(X)) {
-        display_as_list.list(X)
-      } else {
-        tags$li(HTML(X))
-      }
-    }),
+    llply(x, function(X, type) {
+      tags$li(HTML(display_as_list(X, type=type)))
+    }, type=type),
     ...
   )
 
