@@ -52,6 +52,7 @@ render_content <- function(text, ...) {
 }
 
 #' @importFrom brew brew
+#' @importFrom utils capture.output
 #' @export
 #' @rdname render_content
 render_content.brew <- function(text, ...) {

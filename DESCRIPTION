@@ -1,6 +1,6 @@
 Package: yssr
 Title: Your Static Site in R
-Description: Static site generator in R
+Description: Generate a static website from a collection of local files.
 Version: 0.1
 Author: Jean-Olivier Irisson <irisson@normalesup.org>
 Maintainer: Jean-Olivier Irisson <irisson@normalesup.org>
@@ -8,7 +8,9 @@ Depends:
     R (>= 3.0.2)
 License: GPL-3
 LazyData: true
-Roxygen: list(wrap = FALSE)
+Encoding: UTF-8
+Roxygen: list(markdown = FALSE)
+RoxygenNote: 7.2.1
 Imports:
     plyr,
     stringr,
