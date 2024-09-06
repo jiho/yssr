@@ -14,11 +14,7 @@ render_content(text, ...)
 
 \method{render_content}{brew}(text, ...)
 
-\method{render_content}{rmd}(
-  text,
-  options = c("fragment_only", "smartypants", "base64_images"),
-  ...
-)
+\method{render_content}{rmd}(text, options = "+smartypants", ...)
 
 \method{render_content}{md}(text, options = "+smartypants", ...)
 

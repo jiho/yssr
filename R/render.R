@@ -65,8 +65,8 @@ render_content.brew <- function(text, ...) {
 #' @param options options passed to \code{\link[markdown]{markdownToHTML}}
 #' @export
 #' @rdname render_content
-render_content.rmd <- function(text, options=c("fragment_only", "smartypants", "base64_images"), ...) {
-  out <- knit2html(text=text, quiet=TRUE, options=options, ...)
+render_content.rmd <- function(text, options="+smartypants", ...) {
+  out <- knit2html(text=text, quiet=TRUE, template=FALSE, options=options, ...)
   return(out)
 }
 
