@@ -83,7 +83,7 @@ checkbox_bs <- function(name, choices, label=capitalise(name), ...) {
 }
 
 #' @param selected element of the select list to be selected in `select_bs()`
-#' @param selected boolean, allow multiple choices in `select_bs()`
+#' @param multiple boolean, allow multiple choices in `select_bs()`
 #' @export
 #' @rdname form_bootstrap
 select_bs <- function(name, choices, label=capitalise(name), selected = NULL, multiple = FALSE, ...) {

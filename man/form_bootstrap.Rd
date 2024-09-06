@@ -71,7 +71,9 @@ submit_bs(label = "Submit", class = "btn btn-default", ...)
 
 \item{choices}{a vector of possible values; if named, the content is the value tag and the names is displayed}
 
-\item{selected}{boolean, allow multiple choices in `select_bs()`}
+\item{selected}{element of the select list to be selected in `select_bs()`}
+
+\item{multiple}{boolean, allow multiple choices in `select_bs()`}
 
 \item{class}{class of the submit button}
 }

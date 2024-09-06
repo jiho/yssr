@@ -1,7 +1,2 @@
-#' yssr
-#'
-#' Static site generator in R
-#'
-#' @name yssr
-#' @docType package
-NULL
+#' @keywords internal
+"_PACKAGE"
