@@ -65,7 +65,7 @@ render_content.brew <- function(text, ...) {
 #' @param options options passed to \code{\link[markdown]{markdownToHTML}}
 #' @export
 #' @rdname render_content
-render_content.rmd <- function(text, options="+smartypants", ...) {
+render_content.rmd <- function(text, options="+smartypants-fmarkdown-implicit_figures", ...) {
   out <- knit2html(text=text, quiet=TRUE, template=FALSE, options=options, ...)
   return(out)
 }
@@ -73,7 +73,7 @@ render_content.rmd <- function(text, options="+smartypants", ...) {
 #' @importFrom markdown mark_html
 #' @export
 #' @rdname render_content
-render_content.md <- function(text, options="+smartypants", ...) {
+render_content.md <- function(text, options="+smartypants-fmarkdown-implicit_figures", ...) {
   out <- markdown::mark_html(text=text, template=FALSE, options=options, ...)
   return(out)
 }

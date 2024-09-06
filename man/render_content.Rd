@@ -14,11 +14,11 @@ render_content(text, ...)
 
 \method{render_content}{brew}(text, ...)
 
-\method{render_content}{rmd}(text, options = "+smartypants", ...)
+\method{render_content}{rmd}(text, options = "+smartypants-fmarkdown-implicit_figures", ...)
 
-\method{render_content}{md}(text, options = "+smartypants", ...)
+\method{render_content}{md}(text, options = "+smartypants-fmarkdown-implicit_figures", ...)
 
-\method{render_content}{markdown}(text, options = "+smartypants", ...)
+\method{render_content}{markdown}(text, options = "+smartypants-fmarkdown-implicit_figures", ...)
 
 \method{render_content}{rhtml}(text, ...)
 
