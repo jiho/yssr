@@ -70,11 +70,11 @@ render_content.rmd <- function(text, options=c("fragment_only", "smartypants", "
   return(out)
 }
 
-#' @importFrom markdown markdownToHTML
+#' @importFrom markdown mark_html
 #' @export
 #' @rdname render_content
-render_content.md <- function(text, options=c("fragment_only", "smartypants", "base64_images"), ...) {
-  out <- markdown::mark_html(text=text, options=options, ...)
+render_content.md <- function(text, options="+smartypants", ...) {
+  out <- markdown::mark_html(text=text, template=FALSE, options=options, ...)
   return(out)
 }
 #' @export

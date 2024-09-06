@@ -20,17 +20,9 @@ render_content(text, ...)
   ...
 )
 
-\method{render_content}{md}(
-  text,
-  options = c("fragment_only", "smartypants", "base64_images"),
-  ...
-)
+\method{render_content}{md}(text, options = "+smartypants", ...)
 
-\method{render_content}{markdown}(
-  text,
-  options = c("fragment_only", "smartypants", "base64_images"),
-  ...
-)
+\method{render_content}{markdown}(text, options = "+smartypants", ...)
 
 \method{render_content}{rhtml}(text, ...)
 
