@@ -61,5 +61,5 @@ display_as_table <- function(x, digits=NULL, ...) {
     )
   }
 
-  return(as.character(out))
+  return(as.character(htmltools::renderTags(out, indent=FALSE)$html))
 }

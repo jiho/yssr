@@ -46,7 +46,7 @@ display_as_list.list <- function(x, type=c("ul", "ol"), ...) {
     ...
   )
 
-  return(as.character(out))
+  return(as.character(htmltools::renderTags(out, indent=FALSE)$html))
 }
 
 #' @rdname display_as_list
